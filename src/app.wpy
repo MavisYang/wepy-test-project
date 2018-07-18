@@ -1,0 +1,109 @@
+<style lang="less">
+.textHide {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis
+}
+
+.container {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  // align-items: center;
+  // justify-content: space-between;
+  box-sizing: border-box;
+}
+</style>
+
+<script>
+import wepy from 'wepy';
+import 'wepy-async-function';
+
+import { setStore } from 'wepy-redux';
+import configStore from './store';
+
+const store = configStore();
+setStore(store);
+
+export default class extends wepy.app {
+  config = {
+    pages: [
+      'pages/index',
+      'pages/home'
+    ],
+    window: {
+      backgroundTextStyle: 'light',
+      navigationBarBackgroundColor: '#fff',
+      navigationBarTitleText: 'WeChat',
+      navigationBarTextStyle: 'black'
+    }
+  };
+
+  globalData = {
+    userInfo: null
+  };
+
+  constructor() {
+    super();
+    this.use('requestfix'); //在app.wpy中使API promise化
+    this.use('promisify')
+
+    /**
+     * 方法
+     * use(middleWare:String|Function)：使用中间件。
+     *  requestfix: 修复小程序请求并发问题。
+     *  promisify：使用wepy.xxx的方式请求小程序原生API都将Promise化。
+     * intercept(api:String, provider:Object)：使用拦截器对原生API请求进行拦截。
+     */
+
+    // 拦截request请求
+    this.intercept('request', {
+    
+      // 发出请求时的回调函数
+      config(p) {
+        console.log('intercept111');
+         // 对所有request请求中的OBJECT参数对象统一附加时间戳属性
+        p.timestamp = +new Date();
+        return p;
+      },
+      success(obj) {
+        console.log('intercept111');
+        console.log('request success');
+      }
+    });
+  }
+
+  onLaunch() {
+    this.testAsync();
+  }
+
+  sleep(s) {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        resolve('promise resolved');
+      }, s * 1000);
+    });
+  }
+
+  async testAsync() {
+    const data = await this.sleep(3);
+    console.log('data--', data);
+  }
+
+  getUserInfo(cb) {
+    const that = this;
+    if (this.globalData.userInfo) {
+      console.log(1);
+      return this.globalData.userInfo;
+    }
+    wepy.getUserInfo({
+      success(res) {
+        console.log(2, res.userInfo);
+        that.globalData.userInfo = res.userInfo;
+        cb && cb(res.userInfo);
+      }
+    });
+  }
+}
+</script>

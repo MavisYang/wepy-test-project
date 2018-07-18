@@ -1,0 +1,33 @@
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+// const ORIGIN_NAME = 'https://cloud.gemii.cc/lizcloud/api';//生产环境
+var ORIGIN_NAME = 'http://dev.gemii.cc:58080/lizcloud/api'; //开发模式
+// const ORIGIN_NAME = 'http://test.gemii.cc:58080/lizcloud/api' //测试模式
+
+
+var USER_LOGIN = ORIGIN_NAME + '/basis-api/noauth/'; //授权绑定，用户登录1
+var TOKRN = ORIGIN_NAME + '/uaa/oauth/token?'; //获取token
+
+var api = {
+    SECRET: "bGl6LXNob3Atb3duZXI6c2VjcmV0", //base64加密liz-shop-owner:secret
+    APP_ID: 'wx5dcfaad36777e61d', //APPID
+    authLogin: USER_LOGIN + 'wdwd/loadUserAuthorizeWechat', //获取unionid
+    getToken: ORIGIN_NAME + '/basis-api/noauth/usermgmt/loginShopOwner', //卖家获取token
+    getTokenC: TOKRN + 'grant_type=password&password=&username=', //买家获取token
+    refreshToken: TOKRN + 'grant_type=refresh_token&refresh_token=', //刷新token
+
+    getPhoneCode: ORIGIN_NAME + '/basis-api/noauth/usermgmt/sendPhoneCode?_templateCode=SHOP_OWNER_VCODE_MSG&_phone=', //获取手机号码code
+    codeYAN: ORIGIN_NAME + '/basis-api/noauth/usermgmt/checkPhoneCode', //验证手机号码
+
+    getSmallPro: ORIGIN_NAME + '/basis-api/noauth/oauth/login/smallpro', //获取oppenid
+
+    uploadImg: ORIGIN_NAME + '/gridfs-api/noauth/media', //上传图片
+
+    testListUrl: 'http://ons.me/tools/dropload/json.php'
+};
+
+exports.default = api;
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImFwaS5qcyJdLCJuYW1lcyI6WyJPUklHSU5fTkFNRSIsIlVTRVJfTE9HSU4iLCJUT0tSTiIsImFwaSIsIlNFQ1JFVCIsIkFQUF9JRCIsImF1dGhMb2dpbiIsImdldFRva2VuIiwiZ2V0VG9rZW5DIiwicmVmcmVzaFRva2VuIiwiZ2V0UGhvbmVDb2RlIiwiY29kZVlBTiIsImdldFNtYWxsUHJvIiwidXBsb2FkSW1nIiwidGVzdExpc3RVcmwiXSwibWFwcGluZ3MiOiI7Ozs7O0FBQUE7QUFDQSxJQUFNQSxjQUFjLHdDQUFwQixDLENBQThEO0FBQzlEOzs7QUFHQSxJQUFNQyxhQUFhRCxjQUFjLG9CQUFqQyxDLENBQXNEO0FBQ3RELElBQU1FLFFBQVFGLGNBQWMsbUJBQTVCLEMsQ0FBZ0Q7O0FBRWhELElBQU1HLE1BQUs7QUFDUEMsWUFBUSw4QkFERCxFQUNpQztBQUN4Q0MsWUFBUSxvQkFGRCxFQUV1QjtBQUM5QkMsZUFBV0wsYUFBYSw4QkFIakIsRUFHaUQ7QUFDeERNLGNBQVVQLGNBQWMsMkNBSmpCLEVBSThEO0FBQ3JFUSxlQUFXTixRQUFRLHlDQUxaLEVBS3VEO0FBQzlETyxrQkFBY1AsUUFBUSx5Q0FOZixFQU0wRDs7QUFFakVRLGtCQUFjVixjQUFjLHFGQVJyQixFQVEyRztBQUNsSFcsYUFBU1gsY0FBYywyQ0FUaEIsRUFTNEQ7O0FBRW5FWSxpQkFBYVosY0FBYyx3Q0FYcEIsRUFXNkQ7O0FBRXBFYSxlQUFXYixjQUFjLDBCQWJsQixFQWE2Qzs7QUFFcERjLGlCQUFZO0FBZkwsQ0FBWDs7a0JBa0JlWCxHIiwiZmlsZSI6ImFwaS5qcyIsInNvdXJjZXNDb250ZW50IjpbIi8vIGNvbnN0IE9SSUdJTl9OQU1FID0gJ2h0dHBzOi8vY2xvdWQuZ2VtaWkuY2MvbGl6Y2xvdWQvYXBpJzsvL+eUn+S6p+eOr+Wig1xuY29uc3QgT1JJR0lOX05BTUUgPSAnaHR0cDovL2Rldi5nZW1paS5jYzo1ODA4MC9saXpjbG91ZC9hcGknOyAvL+W8gOWPkeaooeW8j1xuLy8gY29uc3QgT1JJR0lOX05BTUUgPSAnaHR0cDovL3Rlc3QuZ2VtaWkuY2M6NTgwODAvbGl6Y2xvdWQvYXBpJyAvL+a1i+ivleaooeW8j1xuXG5cbmNvbnN0IFVTRVJfTE9HSU4gPSBPUklHSU5fTkFNRSArICcvYmFzaXMtYXBpL25vYXV0aC8nOy8v5o6I5p2D57uR5a6a77yM55So5oi355m75b2VMVxuY29uc3QgVE9LUk4gPSBPUklHSU5fTkFNRSArICcvdWFhL29hdXRoL3Rva2VuPyc7Ly/ojrflj5Z0b2tlblxuXG5jb25zdCBhcGkgPXtcbiAgICBTRUNSRVQ6IFwiYkdsNkxYTm9iM0F0YjNkdVpYSTZjMlZqY21WMFwiLCAvL2Jhc2U2NOWKoOWvhmxpei1zaG9wLW93bmVyOnNlY3JldFxuICAgIEFQUF9JRDogJ3d4NWRjZmFhZDM2Nzc3ZTYxZCcsIC8vQVBQSURcbiAgICBhdXRoTG9naW46IFVTRVJfTE9HSU4gKyAnd2R3ZC9sb2FkVXNlckF1dGhvcml6ZVdlY2hhdCcsIC8v6I635Y+WdW5pb25pZFxuICAgIGdldFRva2VuOiBPUklHSU5fTkFNRSArICcvYmFzaXMtYXBpL25vYXV0aC91c2VybWdtdC9sb2dpblNob3BPd25lcicsIC8v5Y2W5a626I635Y+WdG9rZW5cbiAgICBnZXRUb2tlbkM6IFRPS1JOICsgJ2dyYW50X3R5cGU9cGFzc3dvcmQmcGFzc3dvcmQ9JnVzZXJuYW1lPScsIC8v5Lmw5a626I635Y+WdG9rZW5cbiAgICByZWZyZXNoVG9rZW46IFRPS1JOICsgJ2dyYW50X3R5cGU9cmVmcmVzaF90b2tlbiZyZWZyZXNoX3Rva2VuPScsIC8v5Yi35pawdG9rZW5cblxuICAgIGdldFBob25lQ29kZTogT1JJR0lOX05BTUUgKyAnL2Jhc2lzLWFwaS9ub2F1dGgvdXNlcm1nbXQvc2VuZFBob25lQ29kZT9fdGVtcGxhdGVDb2RlPVNIT1BfT1dORVJfVkNPREVfTVNHJl9waG9uZT0nLC8v6I635Y+W5omL5py65Y+356CBY29kZVxuICAgIGNvZGVZQU46IE9SSUdJTl9OQU1FICsgJy9iYXNpcy1hcGkvbm9hdXRoL3VzZXJtZ210L2NoZWNrUGhvbmVDb2RlJywvL+mqjOivgeaJi+acuuWPt+eggVxuXG4gICAgZ2V0U21hbGxQcm86IE9SSUdJTl9OQU1FICsgJy9iYXNpcy1hcGkvbm9hdXRoL29hdXRoL2xvZ2luL3NtYWxscHJvJywvL+iOt+WPlm9wcGVuaWRcblxuICAgIHVwbG9hZEltZzogT1JJR0lOX05BTUUgKyAnL2dyaWRmcy1hcGkvbm9hdXRoL21lZGlhJywvL+S4iuS8oOWbvueJh1xuXG4gICAgdGVzdExpc3RVcmw6J2h0dHA6Ly9vbnMubWUvdG9vbHMvZHJvcGxvYWQvanNvbi5waHAnXG59XG5cbmV4cG9ydCBkZWZhdWx0IGFwaTsiXX0=

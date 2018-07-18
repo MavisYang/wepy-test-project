@@ -1,0 +1,24 @@
+
+    <view>
+        <view class="title">{{title}}</view>
+        <!-- <child></child> -->
+
+        <!-- <view bindtap="tapName({{index}}, 'wepy', 'otherparams')"> Click me! </view> -->
+       <view class="list">
+          <block wx:for="{{groupList}}" wx:for-index="index" wx:for-item="item" wx:key="index">
+             
+    <view class="list-view" style="color:{{item.isExpand&&checkIndex==item.id?'red':'#288BF2'}};height:{{item.isExpand&&checkIndex==item.id?$Item$height+$Item$deltaHeight+'px':$Item$height+'px'}}">
+      <view class="title textHide" bindtap="$Item$tap" data-com-index="{{index}}" data-wpytap-a="{{item.id}}">{{item.title}}</view>
+      <view class="ul-list">
+        <image class="pic" src="{{item.pic}}"/>
+        <view class="date">{{item.date}}</view>
+      </view> 
+     
+    </view>
+
+          </block>
+      
+       </view>
+        
+
+    </view>

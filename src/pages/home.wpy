@@ -1,0 +1,80 @@
+<style lang='less'>
+.list {
+}
+</style>
+
+<template>
+    <view>
+        <view class='title'>{{title}}</view>
+        <!-- <child></child> -->
+
+        <!-- <view @tap="tapName({{index}}, 'wepy', 'otherparams')"> Click me! </view> -->
+       <view class='list'>
+          <repeat for='{{groupList}}' key='index' index='index' item='item'>
+             <Item :item.sync="item" :checkIndex='checkIndex' @childHandle.user='handleCheck' ></Item>
+          </repeat>
+      
+       </view>
+        
+
+    </view>
+</template>
+
+
+<script>
+import wepy from 'wepy';
+import Child from '../components/child';
+import Item from '../components/item';
+import wxRequest from '../utils/wxRequest.js';
+export default class Home extends wepy.page {
+  config = {
+    navigationBarTitleText: 'my wepy'
+  };
+  components = {
+    child: Child,
+    Item: Item
+  };
+  data = {
+    index: 0,
+    title: 'my item.title',
+    checkIndex: -1,
+    groupList: []
+  };
+
+  onLoad() {
+    let url = 'http://ons.me/tools/dropload/json.php?page=0&size=10';
+    wxRequest.fetch(url, null, null, 'GET').then(res => {
+      this.groupList = res.data.map(item => {
+        return { ...item, isExpand: false };
+      });
+
+      this.$apply();
+      console.log(this.groupList, 'res---');
+    });
+    this.$broadcast('handleCheck'); //由父组件发起，所有子组件都会收到此广播事件
+  }
+
+  methods = {
+    tapName(id, title, other, event) {
+      console.log(id, title, other);
+      console.log('event', event);
+    },
+    handleCheck(index) {
+      // 赋值，修改data中的数据
+      this.checkIndex = index;
+      this.groupList = this.groupList.map((item, id) => {
+        return index == id
+          ? Object.assign({},{ ...item, isExpand: false },{})
+          : Object.assign({},{ ...item, isExpand: !item.isExpand },{})
+      });
+      console.log(this.groupList, 'new list');
+    }
+  };
+
+  events = {
+    // 'index-emit':(index)=>{
+    //   console.log(index,'');
+    // }
+  };
+}
+</script>

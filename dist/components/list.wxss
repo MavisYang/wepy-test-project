@@ -1,0 +1,6 @@
+.mylist._3bfc90c:odd {
+  color: red;
+}
+.mylist._3bfc90c:even {
+  color: green;
+}

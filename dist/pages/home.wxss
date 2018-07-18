@@ -1,0 +1,2 @@
+@import "./../components/item.wxss";
+@import "./../components/child.wxss";

@@ -1,0 +1,74 @@
+<style lang='less'>
+.list-view {
+  font-family: PingFangSC-Regular;
+  font-size: 36rpx;
+  color: #288bf2;
+  height: 20px;
+  overflow: hidden;
+  margin: 10px;
+  transition: all 0.3s ease-in;
+  .ul-list {
+    color: #8c949d;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding:20px 20px 20px 0;
+
+    .pic {
+      width: 60rpx;
+      height: 60rpx;
+    }
+  }
+}
+</style>
+<template>
+    <view class='list-view' style="color:{{item.isExpand&&checkIndex==item.id?'red':'#288BF2'}};height:{{item.isExpand&&checkIndex==item.id?height+deltaHeight+'px':height+'px'}}">
+      <view class='title textHide' @tap='tap({{item.id}})'>{{item.title}}</view>
+      <view class='ul-list'>
+        <image class='pic' src='{{item.pic}}'/>
+        <view class='date'>{{item.date}}</view>
+      </view> 
+     
+    </view>
+</template>
+
+<script>
+import wepy from 'wepy';
+export default class Item extends wepy.component {
+  props = {
+  };
+  data = {
+    height: 20,
+    deltaHeight: 0
+  };
+
+  onLoad() {
+    // console.log(this.props.checkIndex,'checkIndex');
+    
+  }
+  methods = {
+    tap(id, event) {
+      var that = this;
+      // 获取节点信息
+      var query = wx.createSelectorQuery();
+      query
+        .select('.ul-list')
+        .boundingClientRect(function(res) {
+          that.deltaHeight = res.height;
+          that.$apply();
+        })
+        .exec();
+        // this.$emit('index-emit', id)
+      that.$emit('childHandle', id); //子组件调取父组件的方法
+    }
+  };
+  events = {
+    // handleCheck(index){
+    //    console.log('我是夫组件调用的子组件方法--',index);
+    // }
+  };
+}
+</script>
+
+
+
