@@ -1,32 +1,120 @@
 <style lang='less'>
-
+.swipper-view {
+  .swiper-tab {
+    height: 460rpx;
+  }
+  image {
+    width: 750rpx;
+    height: 100%;
+  }
+  .swiper-item-view {
+    display: flex;
+    height: 100%;
+    padding: 40rpx 24rpx;
+    .dotsCurrent{
+      position: absolute;
+      bottom:24rpx;
+      right: 44rpx;
+      width: 66rpx;
+      height: 36rpx;
+      font-family: PingFangSC-Regular;
+      font-size: 20rpx;
+      color: #FFFFFF;
+      background: rgba(0,0,0,.5);
+      border-radius: 100rpx;
+      text-align: center;
+      line-height: 36rpx;
+    }
+  }
+}
 </style>
-
+ 
 <template>
-    
+    <view class='swipper-view'>
+      <swiper class="swiper-tab" current
+        vertical="{{swiperParmas['vertical']}}"
+        autoplay="{{swiperParmas['autoplay']}}"
+        interval="{{swiperParmas['interval']}}"
+        duration="{{swiperParmas['duration']}}"
+        indicator-dots="{{swiperParmas['indicator-dots']}}"
+        indicator-color="{{swiperParmas['indicator-color']}}" 
+        indicator-active-color="{{swiperParmas['indicator-active-color']}}" 
+        circular="{{swiperParmas['circular']}}" 
+        previous-margin="{{swiperParmas['previous-margin']}}" 
+        next-margin="{{swiperParmas['next-margin']}}" 
+        display-multiple-items="{{swiperParmas['display-multiple-items']}}"
+      >
+         <repeat for='{{swiperArray}}' key='index' index='index' item='item'>
+            <swiper-item @tap='tapSwiper({{item.id}},{{item.pic}},{{index}})'>
+              <view class='swiper-item-view'> 
+                <image src='{{item.pic}}' />
+                <view class="dotsCurrent">{{index+1}}/{{swiperArray.length}}</view>
+              </view>
+            </swiper-item>
+          </repeat>
+      </swiper>
+    </view>
 </template>
 <script>
-export default class Swiper extends wepy.component{
-    props={
-
+import wepy from "wepy";
+import utils from "../utils/utils.js";
+export default class Swiper extends wepy.component {
+  props = {
+      swiperArray:{
+        type:Array,
+        default: [],
+        twoWay: true
+      },
+      swiperParmas:{
+        type:Object,
+        default: {},
+        twoWay: true 
+      }
+      /**
+      swiperParmas:{
+      // 为swiper参数，不用可不传
+      "vertical":false,//滑动方向是否为纵向
+      'autoplay':true,//是否自动切换
+      "indicator-dots":true ,//是否显示面板指示点
+      "indicator-color":'#fff' ,//指示点颜色
+      "indicator-active-color":'#FF6666',//当前选中的指示点颜色
+      "circular":false, //是否采用衔接滑动
+      "interval":5000,//自动切换时间间隔
+      "duration":500,//滑动动画时长
+      "previous-margin":'20px' ,//前边距，
+      "next-margin":'20px',//后边距 与circular一起用效果更好
+      "display-multiple-items":1,//同时显示的滑块数量
+    } 
+      */
+  };
+  data = {
+    // imgUrls: []
+  };
+  onLoad() {
+      
+      console.log(this.swiperParmas,'swiperParmas');
+      console.log(this.swiperParmas['indicator-dots'],'swiperParmas');
+  }
+  methods = {
+    tapSwiper(id, pic,index, options) {
+        console.log(1111,id, pic,index, options);
+        this.$emit('handleSwiper', id, pic,index,options);
+      /**
+       * id:11111
+       * pic:"http://img02.tooopen.com/images/20150928/tooopen_sy_143912755726.jpg"
+       *  options:_class {active: true, name: "system", source: e, type: "tap", timeStamp: 4463, …}
+       */
+      /**
+       * 传参数
+       * id==options.currentTarget.detaset.wpyhandleswiperA
+       * pic==options.currentTarget.detaset.wpyhandleswiperB
+       */
+    //   utils.pageGo("/pages/home?type=" + id, 1);
     }
-    data={
-
-    }
-    onLoad(){
-
-    }
-    methods={
-
-    }
-    events={
-
-    }
-    // 自定义方法
-    customFunc(){
-        
-    }
-    
+  };
+  events = {};
+  // 自定义方法
+  customFunc() {}
 }
 </script>
 

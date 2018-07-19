@@ -17,21 +17,6 @@
   font-family: PingFangSC-Medium;
   font-size: 30rpx;
 }
-.swipper-view {
-  .swiper-tab {
-    height: 460rpx;
-  }
-  image {
-    width: 750rpx;
-    height: 100%;
-  }
-  .swiper-item-view {
-    display: flex;
-    height: 100%;
-    padding: 40rpx 24rpx;
-    margin: 10rpx auto;
-  }
-}
 </style>
 <template lang='wxml'>
   <view class="container">
@@ -42,19 +27,10 @@
           <view class="userinfo-nickname">{{ userInfo.nickName }}</view>
         </view>
     </view>
-    <view class='swipper-view'>
-      <view class="headTitle textCenter">- 每周微任务 -</view>
-      <swiper class="swiper-tab" autoplay="{{true}}">
-         <repeat for='{{imgUrls}}' key='index' index='index' item='item'>
-            <swiper-item @tap='handleSwiper({{item.id}},{{item.pic}})'>
-             <view class='swiper-item-view'> <image src='{{item.pic}}' /></view>
-            </swiper-item>
-          </repeat>
-       
-      </swiper>
-    </view>
+  
     <CountDown :timeUpdate='downTime' ></CountDown>
     <CountDown1 :timeUpdate='downTime2'></CountDown1>
+    <Swiper :swiperArray.sync='imgUrls' :swiperParmas='swiperParmas' @handleSwiper.user='handleSwiper'></Swiper>
   </view>
 </template>
 
@@ -64,13 +40,15 @@ import wxRequest from "../utils/wxRequest.js";
 import utils from "../utils/utils.js";
 import CountDown from "../components/countDown";
 import CountDown1 from "../components/countDown";
+import Swiper from "../components/swiper";
 export default class Index extends wepy.page {
   config = {
     navigationBarTitleText: "获取用户信息"
   };
   components = {
     CountDown: CountDown,
-    CountDown1: CountDown1
+    CountDown1: CountDown1,
+    Swiper:Swiper
   };
 
   data = {
@@ -87,27 +65,32 @@ export default class Index extends wepy.page {
     },
     imgUrls: [
       {
-        id: Math.random()
-          .toString()
-          .slice(-12),
-        pic:
-          "http://img02.tooopen.com/images/20150928/tooopen_sy_143912755726.jpg"
+        id: Math.random() .toString() .slice(-12),
+        pic:"http://img02.tooopen.com/images/20150928/tooopen_sy_143912755726.jpg"
       },
       {
-        id: Math.random()
-          .toString()
-          .slice(-12),
-        pic:
-          "http://img06.tooopen.com/images/20160818/tooopen_sy_175866434296.jpg"
+        id: Math.random() .toString() .slice(-12),
+        pic: "http://img06.tooopen.com/images/20160818/tooopen_sy_175866434296.jpg"
       },
       {
-        id: Math.random()
-          .toString()
-          .slice(-12),
-        pic:
-          "http://img06.tooopen.com/images/20160818/tooopen_sy_175833047715.jpg"
+        id: Math.random() .toString() .slice(-12),
+        pic: "http://img06.tooopen.com/images/20160818/tooopen_sy_175833047715.jpg"
       }
-    ]
+    ],
+    swiperParmas:{
+      // 为swiper参数，不用可不传
+      "vertical":false,//滑动方向是否为纵向
+      'autoplay':true,//是否自动切换
+      "indicator-dots":true ,//是否显示面板指示点
+      "indicator-color":'#fff' ,//指示点颜色
+      "indicator-active-color":'#FF6666',//当前选中的指示点颜色
+      "circular":true, //是否采用衔接滑动
+      "interval":5000,//自动切换时间间隔
+      "duration":500,//滑动动画时长
+      "previous-margin":'20px' ,//前边距，
+      "next-margin":'20px',//后边距 与circular一起用效果更好
+      "display-multiple-items":1,//同时显示的滑块数量
+    }
   };
 
   //页面的生命周期函数
@@ -120,6 +103,7 @@ export default class Index extends wepy.page {
       this.userInfo = res.userInfo;
       this.$apply();
     });
+    this.$broadcast('handleSwiper'); //由父组件发起，所有子组件都会收到此广播事件
 
     // 获取数据
     // let url = 'http://ons.me/tools/dropload/json.php?page=0&size=10';
@@ -132,8 +116,8 @@ export default class Index extends wepy.page {
 
   // wxml事件处理函数对象，存放响应wxml中所捕获到的事件的函数，如bindtap、bindchange
   methods = {
-    handleSwiper(id, pic, options) {
-      console.log(id, pic, options);
+    handleSwiper(id, pic, index,options) {
+      console.log(222,id, pic,index, options);
       /**
        * id:11111
        * pic:"http://img02.tooopen.com/images/20150928/tooopen_sy_143912755726.jpg"
@@ -144,7 +128,7 @@ export default class Index extends wepy.page {
        * id==options.currentTarget.detaset.wpyhandleswiperA
        * pic==options.currentTarget.detaset.wpyhandleswiperB
        */
-      utils.pageGo("/pages/home?type=" + id, 1);
+      // utils.pageGo("/pages/home?type=" + id, 1);
     }
   };
   //声明组件之间的事件处理函数

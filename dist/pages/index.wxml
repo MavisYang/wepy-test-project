@@ -7,17 +7,7 @@
           <view class="userinfo-nickname">{{ userInfo.nickName }}</view>
         </view>
     </view>
-    <view class="swipper-view">
-      <view class="headTitle textCenter">- 每周微任务 -</view>
-      <swiper class="swiper-tab" autoplay="{{true}}">
-         <block wx:for="{{imgUrls}}" wx:for-index="index" wx:for-item="item" wx:key="index">
-            <swiper-item bindtap="handleSwiper" data-wpyhandleswiper-a="{{item.id}}" data-wpyhandleswiper-b="{{item.pic}}">
-             <view class="swiper-item-view"> <image src="{{item.pic}}"/></view>
-            </swiper-item>
-          </block>
-       
-      </swiper>
-    </view>
+  
     
     <view class="countDown-view">
       <view  wx:if="{{$CountDown$typeTime ==1}}">
@@ -38,6 +28,20 @@
         <text>{{$CountDown1$downTime}}</text>
       </view>
        <view wx:else>{{'00:00:00'}}</view>
+    </view>
+
+    
+    <view class="swipper-view">
+      <swiper class="swiper-tab" current="current" vertical="{{$Swiper$swiperParmas['vertical']}}" autoplay="{{$Swiper$swiperParmas['autoplay']}}" interval="{{$Swiper$swiperParmas['interval']}}" duration="{{$Swiper$swiperParmas['duration']}}" indicator-dots="{{$Swiper$swiperParmas['indicator-dots']}}" indicator-color="{{$Swiper$swiperParmas['indicator-color']}}" indicator-active-color="{{$Swiper$swiperParmas['indicator-active-color']}}" circular="{{$Swiper$swiperParmas['circular']}}" previous-margin="{{$Swiper$swiperParmas['previous-margin']}}" next-margin="{{$Swiper$swiperParmas['next-margin']}}" display-multiple-items="{{$Swiper$swiperParmas['display-multiple-items']}}">
+         <block wx:for="{{$Swiper$swiperArray}}" wx:for-index="$Swiper$index" wx:for-item="$Swiper$item" wx:key="$Swiper$index">
+            <swiper-item bindtap="$Swiper$tapSwiper" data-wpytapswiper-a="{{$Swiper$item.id}}" data-wpytapswiper-b="{{$Swiper$item.pic}}" data-wpytapswiper-c="{{$Swiper$index}}">
+              <view class="swiper-item-view"> 
+                <image src="{{$Swiper$item.pic}}"/>
+                <view class="dotsCurrent">{{$Swiper$index+1}}/{{$Swiper$swiperArray.length}}</view>
+              </view>
+            </swiper-item>
+          </block>
+      </swiper>
     </view>
 
   </view>

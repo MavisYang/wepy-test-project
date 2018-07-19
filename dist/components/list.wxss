@@ -1,6 +1,6 @@
-.mylist._66247fa:odd {
+.mylist._ee8c2c4:odd {
   color: red;
 }
-.mylist._66247fa:even {
+.mylist._ee8c2c4:even {
   color: green;
 }

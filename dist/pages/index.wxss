@@ -1,3 +1,4 @@
+@import "./../components/swiper.wxss";
 @import "./../components/countDown.wxss";
 .userinfo {
   display: -webkit-box;
@@ -21,19 +22,4 @@
   color: #444;
   font-family: PingFangSC-Medium;
   font-size: 30rpx;
-}
-.swipper-view .swiper-tab {
-  height: 460rpx;
-}
-.swipper-view image {
-  width: 750rpx;
-  height: 100%;
-}
-.swipper-view .swiper-item-view {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: flex;
-  height: 100%;
-  padding: 40rpx 24rpx;
-  margin: 10rpx auto;
 }
