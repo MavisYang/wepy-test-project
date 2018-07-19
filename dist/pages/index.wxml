@@ -44,4 +44,9 @@
       </swiper>
     </view>
 
+    
+    <view class="promptView" wx:if="{{prompt}}">
+      {{$PromptBox$prompt}}
+    </view>
+
   </view>

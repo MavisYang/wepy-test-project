@@ -1,0 +1,47 @@
+<style lang='less'>
+.promptView {
+    position: fixed;
+    min-width: 300rpx;
+    font-size: 28rpx;
+    padding: 0 20rpx;
+    box-sizing: border-box;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%);
+    height: 80rpx;
+    line-height: 80rpx;
+    text-align: center;
+    border-radius: 8rpx;
+    color: #eaeaea;
+    background: rgba(0, 0, 0, .5);
+    z-index: 999999;
+}
+</style>
+
+<template>
+    <view class='promptView'>
+      {{prompt}}
+    </view>
+</template>
+<script>
+import wepy from "wepy";
+export default class PromptBox extends wepy.component {
+  props = {
+    prompt:{
+      type:String,
+      default: null,
+      twoWay: true
+    }
+  };
+  data = {};
+  components = {};
+  onLoad() {}
+
+  methods = {};
+  events = {};
+  // 自定义方法
+  customFunc() {}
+}
+</script>
+
+

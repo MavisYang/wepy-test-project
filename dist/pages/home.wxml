@@ -1,6 +1,6 @@
 
     <view>
-        <!-- <view class='title'>{{title}}</view> -->
+        <view class="title">{{title}}</view>
         <switch/>
 
         <view bindtap="tapName" data-wpytapname-a="{{index}}" data-wpytapname-b="wepy" data-wpytapname-c="otherparams"> Click me! </view>

@@ -31,6 +31,7 @@
     <CountDown :timeUpdate='downTime' ></CountDown>
     <CountDown1 :timeUpdate='downTime2'></CountDown1>
     <Swiper :swiperArray.sync='imgUrls' :swiperParmas='swiperParmas' @handleSwiper.user='handleSwiper'></Swiper>
+    <PromptBox wx:if='{{prompt}}' :prompt.sync='prompt'></PromptBox>
   </view>
 </template>
 
@@ -38,9 +39,11 @@
 import wepy from "wepy";
 import wxRequest from "../utils/wxRequest.js";
 import utils from "../utils/utils.js";
-import CountDown from "../components/countDown";
-import CountDown1 from "../components/countDown";
-import Swiper from "../components/swiper";
+import CountDown from "../components/shareComponent/countDown";
+import CountDown1 from "../components/shareComponent/countDown";
+import Swiper from "../components/shareComponent/swiper";
+import PromptBox from "../components/shareComponent/promptBox";
+
 export default class Index extends wepy.page {
   config = {
     navigationBarTitleText: "获取用户信息"
@@ -48,7 +51,8 @@ export default class Index extends wepy.page {
   components = {
     CountDown: CountDown,
     CountDown1: CountDown1,
-    Swiper:Swiper
+    Swiper:Swiper,
+    PromptBox:PromptBox
   };
 
   data = {
@@ -90,7 +94,8 @@ export default class Index extends wepy.page {
       "previous-margin":'20px' ,//前边距，
       "next-margin":'20px',//后边距 与circular一起用效果更好
       "display-multiple-items":1,//同时显示的滑块数量
-    }
+    },
+    prompt:'信息'
   };
 
   //页面的生命周期函数
@@ -118,16 +123,6 @@ export default class Index extends wepy.page {
   methods = {
     handleSwiper(id, pic, index,options) {
       console.log(222,id, pic,index, options);
-      /**
-       * id:11111
-       * pic:"http://img02.tooopen.com/images/20150928/tooopen_sy_143912755726.jpg"
-       *  options:_class {active: true, name: "system", source: e, type: "tap", timeStamp: 4463, …}
-       */
-      /**
-       * 传参数
-       * id==options.currentTarget.detaset.wpyhandleswiperA
-       * pic==options.currentTarget.detaset.wpyhandleswiperB
-       */
       // utils.pageGo("/pages/home?type=" + id, 1);
     }
   };

@@ -3,7 +3,7 @@
 <template>
     <view>
         {{title}}
-        <button @tap='tap' type='primary'>click me</button>
+        <button @tap='tap(1)' type='primary'>click me</button>
     </view>
 </template>
 
@@ -29,9 +29,9 @@ export default class Child extends wepy.component {
   };
 
   methods={
-    tap(){
+    tap(index){
     //  console.log('child is clicked')
-     this.$emit('childFn',100);
+     this.$emit('childFn',index);
      //
      /** 
       * childFn 对应<child @childFn.user='parentFn'></child>

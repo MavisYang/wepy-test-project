@@ -1,5 +1,6 @@
-@import "./../components/swiper.wxss";
-@import "./../components/countDown.wxss";
+@import "./../components/shareComponent/promptBox.wxss";
+@import "./../components/shareComponent/swiper.wxss";
+@import "./../components/shareComponent/countDown.wxss";
 .userinfo {
   display: -webkit-box;
   display: -webkit-flex;

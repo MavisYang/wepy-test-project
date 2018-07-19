@@ -1,0 +1,28 @@
+.swipper-view .swiper-tab {
+  height: 460rpx;
+}
+.swipper-view image {
+  width: 750rpx;
+  height: 100%;
+}
+.swipper-view .swiper-item-view {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: flex;
+  height: 100%;
+  padding: 40rpx 24rpx;
+}
+.swipper-view .swiper-item-view .dotsCurrent {
+  position: absolute;
+  bottom: 24rpx;
+  right: 44rpx;
+  width: 66rpx;
+  height: 36rpx;
+  font-family: PingFangSC-Regular;
+  font-size: 20rpx;
+  color: #FFFFFF;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 100rpx;
+  text-align: center;
+  line-height: 36rpx;
+}
