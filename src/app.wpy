@@ -1,27 +1,36 @@
 <style lang="less">
 .textHide {
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
-
+.flexCenter{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.textCenter{
+  text-align: center;
+}
 .container {
   width: 100vw;
   height: 100vh;
   display: flex;
   flex-direction: column;
-  // align-items: center;
-  // justify-content: space-between;
   box-sizing: border-box;
 }
+
 </style>
 
 <script>
-import wepy from 'wepy';
-import 'wepy-async-function';
+import wepy from "wepy";
+import "wepy-async-function";
 
-import { setStore } from 'wepy-redux';
-import configStore from './store';
+import { setStore } from "wepy-redux";
+import configStore from "./store";
+import API from "./utils/api.js";
+import wxRequest from "./utils/wxRequest.js";
+// import util from './utils/util.js';
 
 const store = configStore();
 setStore(store);
@@ -29,14 +38,14 @@ setStore(store);
 export default class extends wepy.app {
   config = {
     pages: [
-      'pages/index',
-      'pages/home'
+      "pages/index",
+       "pages/home"
     ],
     window: {
-      backgroundTextStyle: 'light',
-      navigationBarBackgroundColor: '#fff',
-      navigationBarTitleText: 'WeChat',
-      navigationBarTextStyle: 'black'
+      backgroundTextStyle: "light",
+      navigationBarBackgroundColor: "#fff",
+      navigationBarTitleText: "WeChat",
+      navigationBarTextStyle: "black"
     }
   };
 
@@ -46,64 +55,149 @@ export default class extends wepy.app {
 
   constructor() {
     super();
-    this.use('requestfix'); //在app.wpy中使API promise化
-    this.use('promisify')
-
-    /**
-     * 方法
-     * use(middleWare:String|Function)：使用中间件。
-     *  requestfix: 修复小程序请求并发问题。
-     *  promisify：使用wepy.xxx的方式请求小程序原生API都将Promise化。
-     * intercept(api:String, provider:Object)：使用拦截器对原生API请求进行拦截。
-     */
-
-    // 拦截request请求
-    this.intercept('request', {
-    
-      // 发出请求时的回调函数
-      config(p) {
-        console.log('intercept111');
-         // 对所有request请求中的OBJECT参数对象统一附加时间戳属性
-        p.timestamp = +new Date();
-        return p;
-      },
-      success(obj) {
-        console.log('intercept111');
-        console.log('request success');
-      }
-    });
+    this.use("requestfix"); //在app.wpy中使API promise化
+    this.use("promisify");
   }
 
   onLaunch() {
-    this.testAsync();
-  }
-
-  sleep(s) {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        resolve('promise resolved');
-      }, s * 1000);
-    });
-  }
-
-  async testAsync() {
-    const data = await this.sleep(3);
-    console.log('data--', data);
-  }
-
-  getUserInfo(cb) {
-    const that = this;
-    if (this.globalData.userInfo) {
-      console.log(1);
-      return this.globalData.userInfo;
-    }
-    wepy.getUserInfo({
-      success(res) {
-        console.log(2, res.userInfo);
-        that.globalData.userInfo = res.userInfo;
-        cb && cb(res.userInfo);
+    console.log("onLaunch--");
+    // 微信预登陆
+    wx.login({
+      success: function(e) {
+        console.log("登录成功", e);
       }
     });
+  }
+  // 全局获取用户信息
+  getUserInfo(res, type, callback) {
+    let _this = this;
+    console.log("获取用户信息--", res);
+    if (res.detail.errMsg == "getUserInfo:fail auth deny") {
+      wx.showModal({
+        title: "用户授权",
+        content: "本小程序需用户授权，请重新点击按钮授权。",
+        mask: true,
+        confirmColor: "#F45C43",
+        success: function(res) {}
+      });
+    } else if (res.detail.errMsg == "getUserInfo:ok") {
+      let userInfo = res.detail.userInfo;
+      _this.globalData.userInfo = userInfo;
+      console.log(_this.globalData.userInfo, "_this.globalData.userInfo");
+      wx.setStorageSync("userinfo", userInfo);
+      callback({
+        hasUserInfo: true,
+        userInfo: userInfo
+      });
+      _this.wxLogin(res.detail.encryptedData, res.detail.iv, type);
+    }
+  }
+
+  //授权登录，拿token
+
+  wxLogin(encryptedData, iv, type) {
+    wx.setStorageSync("userType", type); //user登录方式，sell，buy
+    wx.login({
+      success: function(res) {
+        "use strict";
+        if (res.code) {
+          let params = {
+            appid: API.APP_ID,
+            code: res.code,
+            encryptedData: encryptedData,
+            iv: iv
+          };
+          if (type === "sell") {
+            wxRequest .fetch( API.authLogin + "?_iscreateUser=false", null, params, "POST" )
+              .then(res => {
+                "use strict";
+                // console.log()
+                if (res.data.resultCode === "100") {
+                  console.log(res.data.resultContent);
+                  wx.setStorageSync("unionid", res.data.resultContent.unionId);
+                  wx.setStorageSync("openid", res.data.resultContent.openId);
+                  // util.pageGo('/pages/sell/apply/index', 1)
+                  // AuthProvider.onLogin(type, res => {
+                  //     console.log(res, '获取token')
+                  // })
+                } else {
+                  console.log("error");
+                }
+              });
+          } else if (type === "buy") {
+            wxRequest.fetch(API.authLogin, null, params, "POST").then(res => {
+              "use strict";
+              // console.log()
+              if (res.data.resultCode === "100") {
+                    console.log(res.data.resultContent);
+                    wx.setStorageSync("unionid", res.data.resultContent.unionId);
+                    wx.setStorageSync("openid", res.data.resultContent.openId);
+                    AuthProvider.onLogin(type, null, res => {
+                    console.log(res, "获取token");
+                });
+              } else {
+                console.log("error");
+              }
+            });
+          }
+        }
+      }
+    });
+  }
+
+  // 获取全局属性 用户信息，登录状态
+  getGlobalDatas(canIUse, callback) {
+    let _this = this;
+    let userinfos = wx.getStorageSync("userinfo");
+    if (userinfos.hasOwnProperty("nickName")) {
+      console.log(userinfos, "获取全局属性 用户信息，登录状态");
+      callback({
+        userInfo: userinfos,
+        hasUserInfo: true
+      });
+    } else {
+      console.log("globalData userInfo");
+      if (_this.globalData.userInfo) {
+        callback({
+          userInfo: app.globalData.userInfo,
+          hasUserInfo: true
+        });
+      } else if (canIUse) {
+        // 由于 getUserInfo 是网络请求，可能会在 Page.onLoad 之后才返回
+        // 所以此处加入 callback 以防止这种情况
+        _this.userInfoReadyCallback = res => {
+          callback({
+            userInfo: res.userInfo,
+            hasUserInfo: true
+          });
+        };
+        callback({
+          userInfo: null,
+          hasUserInfo: false
+        });
+      } else if (!canIUse) {
+        console.log("low version");
+        wx.showModal({
+          // 向用户提示升级至最新版微信。
+          title: "提示",
+          confirmColor: "#F45C43",
+          content: "微信版本过低，请升级至最新版。",
+          mask: true
+        });
+      } else {
+        // 在没有 open-type=getUserInfo 版本的兼容处理
+        wx.getUserInfo({
+          success: res => {
+            _this.globalData.userInfo = res.userInfo;
+            callback({
+              userInfo: res.userInfo,
+              hasUserInfo: true
+            });
+            console.log(success);
+          }
+        });
+      }
+    }
   }
 }
 </script>

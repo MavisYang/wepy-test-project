@@ -1,0 +1,92 @@
+<style lang='less'>
+</style>
+<template>
+    <view class='countDown-view'>
+      <view wx:if='{{typeTime ==1}}'>
+        <text>{{downTime[0]}}</text>:<text>{{downTime[1]}}</text>:<text>{{downTime[2]}}</text>
+      </view>
+      <view wx:elif='{{typeTime ==2}}'>
+        <text>{{downTime}}</text>
+      </view>
+       <view wx:else>{{'00:00:00'}}</view>
+    </view>
+</template>
+
+<script>
+import wepy from "wepy";
+import utils from "../utils/utils.js";
+export default class CountDown extends wepy.component {
+  props = {
+    timeUpdate: {
+      type: Object,
+      default: "",
+      twoWay: true
+    }
+  };
+  data = {
+    typeTime: "",
+    downTime: ""
+  };
+  onshow() {}
+  onLoad() {
+    // 获取父组件中的参数:this.$parent
+    // 获取props中的参数 ：this.timeUpdate
+    // 获取data中的参数：this.downTime
+    // 获取方法：this.countDownTime
+    // console.log(this.$parent,'this.$parent');
+    // console.log(this.$parent.$props,'this.$parent');
+    // console.log(this.timeUpdate, "timeUpdate");
+    // console.log(this.countDownTime,'countDownTime');
+    this.handleCountDownTime();
+  }
+  methods = {
+    tap() {}
+  };
+  handleCountDownTime() {
+    let timeUpdate = this.timeUpdate.timeUpdate;
+    let type = this.timeUpdate.type;
+    this.typeTime = type
+    let current = new Date().getTime();
+    if (current < timeUpdate) {
+      let time = Math.floor((timeUpdate - current) / 1000);
+      this.downTime = this.countDownTime(time,type);
+      this.$apply();
+      setTimeout(() => {
+        this.handleCountDownTime();
+      }, 500);
+     
+    }
+  };
+  
+  // time 团购倒计时
+  countDownTime(time, type) {
+    var leave1 = time % (24 * 3600);
+    var hours = Math.floor(leave1 / 3600);
+    //计算相差分钟数
+    var leave2 = leave1 % 3600; //计算小时数后剩余的秒数
+    var minutes = Math.floor(leave2 / 60);
+    //计算相差秒数
+    var leave3 = leave2 % 60;
+    var seconds = leave3;
+    if (hours < 0 || minutes < 0 || seconds < 0) {
+      return "00:00:00";
+    }
+    switch (type) {
+      case 1:
+        return [ this.formatZero(hours), this.formatZero(minutes), this.formatZero(seconds) ];
+        break;
+      case 2:
+        return  this.formatZero(hours) + ":" + this.formatZero(minutes) + ":" + this.formatZero(seconds);
+        break;
+      default:
+        break;
+    }
+  }
+  formatZero(str) {
+    return str < 10 ? "0" + str : str;
+  }
+}
+</script>
+
+
+

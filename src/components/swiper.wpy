@@ -1,0 +1,33 @@
+<style lang='less'>
+
+</style>
+
+<template>
+    
+</template>
+<script>
+export default class Swiper extends wepy.component{
+    props={
+
+    }
+    data={
+
+    }
+    onLoad(){
+
+    }
+    methods={
+
+    }
+    events={
+
+    }
+    // 自定义方法
+    customFunc(){
+        
+    }
+    
+}
+</script>
+
+

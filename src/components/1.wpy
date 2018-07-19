@@ -1,0 +1,22 @@
+<style lang='less'>
+</style>
+
+<template>
+    
+</template>
+<script>
+import wepy from "wepy";
+export default class Model extends wepy.component {
+  props = {};
+  data = {};
+  components = {};
+  onLoad() {}
+
+  methods = {};
+  events = {};
+  // 自定义方法
+  customFunc() {}
+}
+</script>
+
+

@@ -1,9 +1,9 @@
 
     <view>
-        <view class="title">{{title}}</view>
-        <!-- <child></child> -->
+        <!-- <view class='title'>{{title}}</view> -->
+        <switch/>
 
-        <!-- <view bindtap="tapName({{index}}, 'wepy', 'otherparams')"> Click me! </view> -->
+        <view bindtap="tapName" data-wpytapname-a="{{index}}" data-wpytapname-b="wepy" data-wpytapname-c="otherparams"> Click me! </view>
        <view class="list">
           <block wx:for="{{groupList}}" wx:for-index="index" wx:for-item="item" wx:key="index">
              

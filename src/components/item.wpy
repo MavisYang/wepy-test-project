@@ -36,6 +36,21 @@
 import wepy from 'wepy';
 export default class Item extends wepy.component {
   props = {
+
+    // // 静态传值
+    // title: String,
+
+    // // 父向子单向动态传值
+    // syncTitle: {
+    //     type: String,
+    //     default: 'null'
+    // },
+
+    // twoWayTitle: {
+    //     type: String,
+    //     default: 'nothing',
+    //     twoWay: true
+    // }
   };
   data = {
     height: 20,
