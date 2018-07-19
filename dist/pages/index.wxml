@@ -45,8 +45,8 @@
     </view>
 
     
-    <view class="promptView" wx:if="{{prompt}}">
-      {{$PromptBox$prompt}}
+    <view  wx:if="{{$PromptBox$isPrompt&&$PromptBox$promptWord}}" class="promptView">
+      {{$PromptBox$promptWord}}
     </view>
 
   </view>

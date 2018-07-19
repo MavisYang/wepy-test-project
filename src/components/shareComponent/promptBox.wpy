@@ -19,12 +19,13 @@
 </style>
 
 <template>
-    <view class='promptView'>
-      {{prompt}}
+    <view wx:if='{{isPrompt&&promptWord}}' class='promptView'>
+      {{promptWord}}
     </view>
 </template>
 <script>
 import wepy from "wepy";
+import utils from "../../utils/utils.js";
 export default class PromptBox extends wepy.component {
   props = {
     prompt:{
@@ -33,10 +34,35 @@ export default class PromptBox extends wepy.component {
       twoWay: true
     }
   };
-  data = {};
+  data = {
+    isPrompt:false,
+    promptWord:null
+  };
   components = {};
-  onLoad() {}
-
+  onLoad() {
+    console.log(11);
+    
+    console.log(this.prompt,1);
+    
+    this.showPromptBox()
+  }
+  showPromptBox(){
+    if(this.prompt){
+       this.promptWord = this.prompt;
+       this.isPrompt=true;
+       this.hidePromptBox()
+       this.$apply()
+    }
+  }
+  hidePromptBox(){
+    let that = this;
+    let fadeOutTimeout = setTimeout(() => {
+        that.isPrompt=false;
+        this.promptWord=null;
+        that.$apply()
+        clearTimeout(fadeOutTimeout);
+    }, 2000);
+  }
   methods = {};
   events = {};
   // 自定义方法

@@ -60,7 +60,7 @@ export default class extends wepy.app {
   }
 
   onLaunch() {
-    console.log("onLaunch--");
+    // console.log("onLaunch--");
     // 微信预登陆
     wx.login({
       success: function(e) {
@@ -71,7 +71,7 @@ export default class extends wepy.app {
   // 全局获取用户信息
   getUserInfo(res, type, callback) {
     let _this = this;
-    console.log("获取用户信息--", res);
+    // console.log("获取用户信息--", res);
     if (res.detail.errMsg == "getUserInfo:fail auth deny") {
       wx.showModal({
         title: "用户授权",
@@ -83,7 +83,7 @@ export default class extends wepy.app {
     } else if (res.detail.errMsg == "getUserInfo:ok") {
       let userInfo = res.detail.userInfo;
       _this.globalData.userInfo = userInfo;
-      console.log(_this.globalData.userInfo, "_this.globalData.userInfo");
+      // console.log(_this.globalData.userInfo, "_this.globalData.userInfo");
       wx.setStorageSync("userinfo", userInfo);
       callback({
         hasUserInfo: true,

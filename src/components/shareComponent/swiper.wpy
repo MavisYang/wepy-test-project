@@ -92,12 +92,12 @@ export default class Swiper extends wepy.component {
   };
   onLoad() {
       
-      console.log(this.swiperParmas,'swiperParmas');
-      console.log(this.swiperParmas['indicator-dots'],'swiperParmas');
+      // console.log(this.swiperParmas,'swiperParmas');
+      // console.log(this.swiperParmas['indicator-dots'],'swiperParmas');
   }
   methods = {
     tapSwiper(id, pic,index, options) {
-        console.log(1111,id, pic,index, options);
+        // console.log(1111,id, pic,index, options);
         this.$emit('handleSwiper', id, pic,index,options);
       /**
        * id:11111

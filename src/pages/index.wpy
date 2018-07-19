@@ -31,7 +31,7 @@
     <CountDown :timeUpdate='downTime' ></CountDown>
     <CountDown1 :timeUpdate='downTime2'></CountDown1>
     <Swiper :swiperArray.sync='imgUrls' :swiperParmas='swiperParmas' @handleSwiper.user='handleSwiper'></Swiper>
-    <PromptBox wx:if='{{prompt}}' :prompt.sync='prompt'></PromptBox>
+    <PromptBox :prompt.sync='prompt'></PromptBox>
   </view>
 </template>
 
@@ -95,7 +95,7 @@ export default class Index extends wepy.page {
       "next-margin":'20px',//后边距 与circular一起用效果更好
       "display-multiple-items":1,//同时显示的滑块数量
     },
-    prompt:'信息'
+    prompt:null,
   };
 
   //页面的生命周期函数
@@ -122,7 +122,12 @@ export default class Index extends wepy.page {
   // wxml事件处理函数对象，存放响应wxml中所捕获到的事件的函数，如bindtap、bindchange
   methods = {
     handleSwiper(id, pic, index,options) {
-      console.log(222,id, pic,index, options);
+      // console.log(222,id, pic,index, options);
+      this.prompt = '我是第'+index+'张图片';
+      console.log(this.prompt);
+      console.log(typeof this.prompt);
+      
+      this.$apply()
       // utils.pageGo("/pages/home?type=" + id, 1);
     }
   };
