@@ -140,6 +140,12 @@ export default class Home extends wepy.page {
      console.log(`pather title value: ${oldValue} -> ${newValue}`)
     }
   }
+
+  // async/await 的使用方式, 需要开启 Promise 和 async/await 支持，参考 WIKI
+  async function request () {
+    let d = await wepy.request('xxxxx');
+    console.log(d);
+  }
   onLoad(options) {
     console.log(options,'options');
     let url = 'http://ons.me/tools/dropload/json.php?page=0&size=5';
