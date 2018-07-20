@@ -1,2 +1,4 @@
+@import "./../components/shareComponent/promptBox.wxss";
+@import "./../components/group.wxss";
 @import "./../components/item.wxss";
 @import "./../components/child.wxss";

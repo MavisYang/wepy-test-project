@@ -10,15 +10,19 @@
 </template>
 <script>
   import wepy from 'wepy'
-
+  import Child from "./child";
   export default class GroupItem extends wepy.component {
     props = {
       gitem: {}
     }
     data = {
     }
+    components={
+      Child:Child,
+    }
     methods = {
       tap () {
+        this.$invoke('Child','invokeTest')
         this.gitem.childname = `Child Random(${Math.random()})`
         console.log(`Clicked Group ${this.$parent.$index}. Item ${this.$index}, ID is ${this.gitem.childid}`)
       }

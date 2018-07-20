@@ -21,29 +21,35 @@
 <template lang='wxml'>
   <view class="container">
     <view class="userInfo-view">
-      <button  wx:if='{{!hasUserInfo&&canIUse}}' open-type="getUserInfo" type='primary' @getuserinfo="getUserInfo">获取信息</button>
-        <view wx:else class="userinfo">
+      <button  wx:if='{{!hasUserInfo&&canIUse}}' size='mini' open-type="getUserInfo" type='primary' @getuserinfo="getUserInfo">获取信息</button>
+        <view wx:else class="userinfo" @tap="showTips">
           <image class="userinfo-avatar" src="{{ userInfo.avatarUrl }}" background-size="cover"/>
           <view class="userinfo-nickname">{{ userInfo.nickName }}</view>
         </view>
     </view>
-  
+    <GetUserInfo :btnTxt.sync='btnTxt' :that.sync='this'></GetUserInfo>
     <CountDown :timeUpdate='downTime' ></CountDown>
     <CountDown1 :timeUpdate='downTime2'></CountDown1>
+    <view>另外的CountDown2</view>
+    <CountDownOther :timer.sync='timer'></CountDownOther>
+    <TimeDown :clickBtn="Functions"></TimeDown>
     <Swiper :swiperArray.sync='imgUrls' :swiperParmas='swiperParmas' @handleSwiper.user='handleSwiper'></Swiper>
-    <PromptBox :prompt.sync='prompt'></PromptBox>
+    <PromptBox wx:if='{{popErrorMsg}}' :prompt.sync='popErrorMsg'></PromptBox>
+     
   </view>
 </template>
 
 <script>
 import wepy from "wepy";
 import wxRequest from "../utils/wxRequest.js";
-import utils from "../utils/utils.js";
+import Utils from "../utils/utils.js";
 import CountDown from "../components/shareComponent/countDown";
 import CountDown1 from "../components/shareComponent/countDown";
+import CountDownOther from "../components/shareComponent/countDownOther";
 import Swiper from "../components/shareComponent/swiper";
 import PromptBox from "../components/shareComponent/promptBox";
-
+import GetUserInfo from "../components/shareComponent/getUserInfo";
+import TimeDown from "../components/shareComponent/timeDown";
 export default class Index extends wepy.page {
   config = {
     navigationBarTitleText: "获取用户信息"
@@ -51,22 +57,27 @@ export default class Index extends wepy.page {
   components = {
     CountDown: CountDown,
     CountDown1: CountDown1,
+    CountDownOther:CountDownOther,
+    TimeDown:TimeDown,
     Swiper:Swiper,
-    PromptBox:PromptBox
+    PromptBox:PromptBox,
+    GetUserInfo:GetUserInfo
   };
 
   data = {
     userInfo: null,
     hasUserInfo: false, //用户授权状态
     canIUse: wx.canIUse("button.open-type.getUserInfo"), //判断是否支持button微信授权
+    btnTxt: '立即授权',
     downTime:{
-      timeUpdate: 1532008742837, //倒计时
+      timeUpdate: 1535008742837, //倒计时
       type: 1,
     },
     downTime2:{
       timeUpdate: 1534008742850, //倒计时
       type: 2,
     },
+    timer:1534008742850,
     imgUrls: [
       {
         id: Math.random() .toString() .slice(-12),
@@ -95,15 +106,14 @@ export default class Index extends wepy.page {
       "next-margin":'20px',//后边距 与circular一起用效果更好
       "display-multiple-items":1,//同时显示的滑块数量
     },
-    prompt:null,
+    popErrorMsg:null,
   };
 
   //页面的生命周期函数
   onLoad() {
     console.log("初始化加载--onLoad");
     // 初始化时获取userinfo
-    this.$parent.getGlobalDatas(this.canIUse, res => {
-      console.log("初始化加载--", res);
+    this.$parent.getGlobalData(this.canIUse, res => {
       this.hasUserInfo = res.hasUserInfo;
       this.userInfo = res.userInfo;
       this.$apply();
@@ -118,16 +128,16 @@ export default class Index extends wepy.page {
     // });
   }
   computed = {};
-
+  // 自定义方法
+  showTips(){
+     Utils.ErrorTips(this,'show tips',3000)
+  }
   // wxml事件处理函数对象，存放响应wxml中所捕获到的事件的函数，如bindtap、bindchange
   methods = {
+    // methods方法中的方法 
     handleSwiper(id, pic, index,options) {
       // console.log(222,id, pic,index, options);
-      this.prompt = '我是第'+index+'张图片';
-      console.log(this.prompt);
-      console.log(typeof this.prompt);
-      
-      this.$apply()
+      Utils.ErrorTips(this,'我是第'+index+1+'张图片',3000)
       // utils.pageGo("/pages/home?type=" + id, 1);
     }
   };
@@ -144,18 +154,28 @@ export default class Index extends wepy.page {
     }
   };
 
+  Functions() {
+    Utils.ErrorTips(this.$parent, 'This is a function!', 2000)
+  }
   // 初登陆时 如果没有存储的userinfo则点击获取，
 
   getUserInfo(e) {
-    console.log(e, this.$parent, "e");
+    // console.log(e, this.$parent, "e");
+   
     // 在Page页面实例中，可以通过this.$parent来访问App实例。
-    this.$parent.getUserInfo(e, "sell", res => {
-      "use strict";
-      console.log("getUserInfo", res);
+    // this.$parent.getUserInfo(e, "sell", res => {
+    //   "use strict";
+    //   console.log("getUserInfo", res);
+    //   this.hasUserInfo = res.hasUserInfo;
+    //   this.userInfo = res.userInfo;
+    //   this.$apply();
+    // });
+    this.$parent.getUserInfo(e)
+    this.$parent.getGlobalData(this.canIUse,res=>{
       this.hasUserInfo = res.hasUserInfo;
       this.userInfo = res.userInfo;
       this.$apply();
-    });
+    })
   }
 }
 </script>

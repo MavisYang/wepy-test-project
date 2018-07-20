@@ -3,11 +3,11 @@
 </style>
 <template>
   <view class="group">
-    <text class="id">{{grouplist.id}}. </text>
-    <text class="name" @tap="tap">{{grouplist.name}}</text>
+    <text class="id">{{groupItem.id}}. </text>
+    <text class="name" @tap="tap">{{groupItem.name}}</text>
     <view>
-      <repeat for="{{grouplist.list}}" item="item">
-        <groupitem :gitem="item"></groupitem>
+      <repeat for="{{groupItem.list}}" item="item">
+        <GroupItem :gitem="item"></GroupItem>
       </repeat>
     </view>
   </view>
@@ -19,21 +19,29 @@
 
   export default class Group extends wepy.component {
     props = {
-      grouplist: {},
-      index: {}
+      groupItem: {},
+      indexa: {}
     }
      onLoad (){
-       console.log(111,this.props.grouplist);
+       console.log(this.groupItem,'this.groupItem');
        
      }
     components = {
-      groupitem: GroupItem
+      GroupItem: GroupItem
     }
     methods = {
       tap () {
-        this.grouplist.name = `Parent Random(${Math.random()})`
-        console.log(`Clicked Group ${this.$index}, ID is ${this.grouplist.id}`)
+        this.$emit('index-emit', this.groupItem.id,this.groupItem.name)
+        this.groupItem.name = `Parent Random(${Math.random()})`
+        
+        // console.log(`Clicked Group ${this.$index}, ID is ${this.groupItem.id}`)
       }
+    }
+    events={
+      // 'index-broadcast':(...args)=>{
+      //   console.log(args,'broadcast');
+        
+      // }
     }
   }
 </script>

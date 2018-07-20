@@ -3,7 +3,16 @@
 <template>
     <view>
         {{title}}
-        <button @tap='tap(1)' type='primary'>click me</button>
+        <button @tap='tap(1)'  type='primary'>click me</button>
+       
+        <view>
+          <button @tap='changeNum'  type='primary'>change num</button>
+          this is change num {{changeNum}}
+        </view>
+        <view>
+          <button @tap='changeTitle'  type='primary'>change twoWayTitle</button>
+          this is change title {{twoWayTitle}}
+        </view>
     </view>
 </template>
 
@@ -11,6 +20,7 @@
 import wepy from 'wepy';
 export default class Child extends wepy.component {
   props = {
+    
       // 静态传值
     title: String,
 
@@ -25,9 +35,21 @@ export default class Child extends wepy.component {
       default: 'nothing',
       twoWay: true
     },
+    changeNum:{
+      type: Number,
+      default: 0,
+      twoWay: true
+    },
 
   };
-
+  data={
+    // num:1 
+  }
+  watch={
+    changeNum(newValue, oldValue){
+      console.log(`num value: ${oldValue} -> ${newValue}`)
+    }
+  }
   methods={
     tap(index){
     //  console.log('child is clicked')
@@ -39,19 +61,32 @@ export default class Child extends wepy.component {
       * parentFn(num,evt){ console.log('parent received emit event, number is: ' + num) }
      */
          
+    },
+    changeNum(){
+      this.changeNum++;
+      this.$apply();
+    },
+    changeTitle(){
+      this.twoWayTitle = 'change title';
+      this.$apply();
+    },
+    invokeTest(){
+      console.log('I am this.$invoke ');
+      
     }
   }
   onLoad() {
-    console.log(this.title); // mytitle
-    this.title='c-title';
-    this.twoWayTitle = 'two-way-title';
-    this.$apply();
-    console.log(this.$parent.parentTitle);
-     // two-way-title.  --- twoWay为true时，子组件props中的属性值改变时，会同时改变父组件对应的值
-    this.$parent.parentTitle = 'p-title-changed'
-    this.$parent.$apply();
-     console.log(this.title); // 'c-title';
-    console.log(this.syncTitle); 
+    
+    // console.log(this.title); // mytitle
+    // this.title='c-title';
+    // this.twoWayTitle = 'two-way-title';
+    // this.$apply();
+    // console.log(this.$parent.parentTitle);
+    //  // two-way-title.  --- twoWay为true时，子组件props中的属性值改变时，会同时改变父组件对应的值
+    // this.$parent.parentTitle = 'p-title-changed'
+    // this.$parent.$apply();
+    //  console.log(this.title); // 'c-title';
+    // console.log(this.syncTitle); 
     // 'p-title-changed' --- 有.sync修饰符的props属性值，当在父组件中改变时，会同时改变子组件对应的值。
 
   }

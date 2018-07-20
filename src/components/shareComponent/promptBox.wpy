@@ -19,8 +19,8 @@
 </style>
 
 <template>
-    <view wx:if='{{isPrompt&&promptWord}}' class='promptView'>
-      {{promptWord}}
+    <view class='promptView'>
+      {{prompt}}
     </view>
 </template>
 <script>
@@ -35,33 +35,30 @@ export default class PromptBox extends wepy.component {
     }
   };
   data = {
-    isPrompt:false,
-    promptWord:null
   };
   components = {};
   onLoad() {
-    console.log(11);
     
-    console.log(this.prompt,1);
+  //   console.log(this.prompt,1);
     
-    this.showPromptBox()
-  }
-  showPromptBox(){
-    if(this.prompt){
-       this.promptWord = this.prompt;
-       this.isPrompt=true;
-       this.hidePromptBox()
-       this.$apply()
-    }
-  }
-  hidePromptBox(){
-    let that = this;
-    let fadeOutTimeout = setTimeout(() => {
-        that.isPrompt=false;
-        this.promptWord=null;
-        that.$apply()
-        clearTimeout(fadeOutTimeout);
-    }, 2000);
+  //   this.showPromptBox()
+  // }
+  // showPromptBox(){
+  //   if(this.prompt){
+  //      this.promptWord = this.prompt;
+  //      this.isPrompt=this.isPrompt;
+  //      this.hidePromptBox()
+  //      this.$apply()
+  //   }
+  // }
+  // hidePromptBox(){
+  //   let that = this;
+  //   let fadeOutTimeout = setTimeout(() => {
+  //       that.isPrompt=false;
+  //       this.promptWord=null;
+  //       that.$apply()
+  //       clearTimeout(fadeOutTimeout);
+  //   }, 2000);
   }
   methods = {};
   events = {};

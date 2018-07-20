@@ -1,0 +1,51 @@
+<template>
+  <button wx:if="{{!hasUserInfo && canIUse}}" open-type="getUserInfo" @getuserinfo="getUserInfo">{{btnTxt}}</button>
+</template>
+
+<script>
+import wepy from 'wepy'
+export default class GetUserInfo extends wepy.component {
+  /** 
+   * 用户授权
+  */
+  data = {
+    // userInfo:null,
+    hasUserInfo: false,//用户授权状态
+    canIUse: wx.canIUse('button.open-type.getUserInfo')
+  }
+  props = {
+    btnTxt: {
+      type: String,
+      default: '',
+       twoWay: true
+    },
+    that: {
+      type: Object,
+      default: {},
+       twoWay: true
+    }
+  }
+  onLoad() {
+    this.$parent.$parent.getGlobalData(this.canIUse, res => {
+      console.log(res);
+      this.userInfo = res.userInfo
+      this.hasUserInfo = res.hasUserInfo
+      this.$apply()
+    })
+  }
+  
+  methods = {
+    getUserInfo(e) {
+        this.$parent.$parent.getUserInfo(e) //用户授权全局组件
+        this.$parent.$parent.getGlobalData(this.canIUse, res => {
+          this.hasUserInfo = res.hasUserInfo;
+          this.$apply()
+        })
+    }
+
+
+  }
+}
+</script>
+<style lang="less">
+</style>

@@ -1,38 +1,15 @@
 const wxRequest = require('./wxRequest');
 const API = require('./api');
 
-function onLogin(type, phoneNum, callback) {
-    if (phoneNum) {
-        //有手机号码就是第一次进来你，然后保存下来
-        wx.setStorageSync('phoneNum', phoneNum)
-    }
-    let url, dataParams, tokenParams;
-    if (type === 'sell') {
-        url = API.getToken;
-        tokenParams = null;
-        dataParams = {
-            phone: phoneNum || wx.getStorageSync('phoneNum'),
-            id: wx.getStorageSync('unionid')
-        }
-    } else if ((type === 'buy')) {
-        tokenParams = { type: 'Basic', value: API.SECRET };
-        url = API.getTokenC + 'unionid_' + wx.getStorageSync('unionid') + '_type_2';
-    }
-    return wxRequest.fetch(url, tokenParams, dataParams, "POST").then((res) => {
-        if (res.data.resultCode === '100') {
-            console.log('卖家鉴权');
-            saveTokens(res.data.resultContent.access_token, res.data.resultContent.refresh_token, res.data.resultContent.expires_in);
-            callback(res.data);
-            return res.data.resultContent.access_token
-        } else if (res.data.resultCode === '02504046') {
-            callback({ msg: '该用户不在白名单内', code: 404 })
-        } else if (res.data.access_token) {
-            console.log('买家鉴权');
-            saveTokens(res.data.access_token, res.data.refresh_token, res.data.expires_in);
-            return res.data.access_token
-        } else {
-            callback({ msg: '异常错误', code: 304 })
-        }
+function onLogin() {
+    let url = API.getToken + 'unionid_' + wx.getStorageSync('unionId') + '_type_2';
+    let token = API.SECRET;
+    
+
+    return wxRequest.fetch(url, { type: "Basic", value: token }, {}, "POST")
+    .then((res) => {
+        saveTokens(res.data.access_token, res.data.refresh_token, res.data.expires_in);
+        return res.data.access_token
     }).catch((req) => {
         callback({ msg: '请求出错', code: 502 });
         return 'error'
@@ -57,13 +34,13 @@ function onRefreshToken() {
             saveTokens(res.data.access_token, res.data.refresh_token, res.data.expires_in);
             return res.data.access_token;
         } else {
-            return onLogin(wx.getStorageSync('userType'), null, res => { }).then(res => {
+            return onLogin().then(res => {
                 return res
             });
         }
     }).catch(req => {
         if (wx.getStorageSync('refresh_token') != null) {
-            return onLogin(wx.getStorageSync('userType'), null, res => { }).then(res => {
+            return onLogin().then(res => {
                 return res
             });
         }
@@ -74,17 +51,13 @@ function getAccessToken() {
     var dt = date.getTime();
     var expires_in = wx.getStorageSync('expires_in');
     if(!wx.getStorageSync('access_token') || !wx.getStorageSync('expires_in') || !wx.getStorageSync('refresh_token')){
-        return onLogin(wx.getStorageSync('userType'), wx.getStorageSync('phoneNum'),res=>{
-            "use strict";
-            console.log(res);
+        return onLogin(),then(res=>{
+            return res
         })
     }else {
-        console.log("222")
         if ((!expires_in || dt >= expires_in) && wx.getStorageSync('access_token')) {
-            console.log("333")
             return onRefreshToken();
         } else if (!wx.getStorageSync('access_token')) {
-            console.log("444")
             return new Promise((resolve, reject) => {
                 setTimeout(() => {
                     resolve(wx.getStorageSync('access_token'))

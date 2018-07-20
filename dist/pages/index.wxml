@@ -1,13 +1,15 @@
 
   <view class="container">
     <view class="userInfo-view">
-      <button  wx:if="{{!hasUserInfo&&canIUse}}" open-type="getUserInfo" type="primary" bindgetuserinfo="getUserInfo">获取信息</button>
-        <view  wx:else class="userinfo">
+      <button  wx:if="{{!hasUserInfo&&canIUse}}" size="mini" open-type="getUserInfo" type="primary" bindgetuserinfo="getUserInfo">获取信息</button>
+        <view  wx:else class="userinfo" bindtap="showTips">
           <image class="userinfo-avatar" src="{{ userInfo.avatarUrl }}" background-size="cover"/>
           <view class="userinfo-nickname">{{ userInfo.nickName }}</view>
         </view>
     </view>
-  
+    
+  <button  wx:if="{{!$GetUserInfo$hasUserInfo && $GetUserInfo$canIUse}}" open-type="getUserInfo" bindgetuserinfo="$GetUserInfo$getUserInfo">{{$GetUserInfo$btnTxt}}</button>
+
     
     <view class="countDown-view">
       <view  wx:if="{{$CountDown$typeTime ==1}}">
@@ -30,6 +32,13 @@
        <view wx:else>{{'00:00:00'}}</view>
     </view>
 
+    <view>另外的CountDown2</view>
+    
+  <view>{{$CountDownOther$countTime}}</view>
+
+    
+    <view catchtap="$TimeDown$getCodeBtn">{{$TimeDown$countTime}}</view>
+
     
     <view class="swipper-view">
       <swiper class="swiper-tab" current="current" vertical="{{$Swiper$swiperParmas['vertical']}}" autoplay="{{$Swiper$swiperParmas['autoplay']}}" interval="{{$Swiper$swiperParmas['interval']}}" duration="{{$Swiper$swiperParmas['duration']}}" indicator-dots="{{$Swiper$swiperParmas['indicator-dots']}}" indicator-color="{{$Swiper$swiperParmas['indicator-color']}}" indicator-active-color="{{$Swiper$swiperParmas['indicator-active-color']}}" circular="{{$Swiper$swiperParmas['circular']}}" previous-margin="{{$Swiper$swiperParmas['previous-margin']}}" next-margin="{{$Swiper$swiperParmas['next-margin']}}" display-multiple-items="{{$Swiper$swiperParmas['display-multiple-items']}}">
@@ -45,8 +54,9 @@
     </view>
 
     
-    <view  wx:if="{{$PromptBox$isPrompt&&$PromptBox$promptWord}}" class="promptView">
-      {{$PromptBox$promptWord}}
+    <view class="promptView" wx:if="{{popErrorMsg}}">
+      {{$PromptBox$prompt}}
     </view>
 
+     
   </view>

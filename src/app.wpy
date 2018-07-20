@@ -4,12 +4,12 @@
   white-space: nowrap;
   text-overflow: ellipsis;
 }
-.flexCenter{
+.flexCenter {
   display: flex;
   justify-content: center;
   align-items: center;
 }
-.textCenter{
+.textCenter {
   text-align: center;
 }
 .container {
@@ -19,7 +19,6 @@
   flex-direction: column;
   box-sizing: border-box;
 }
-
 </style>
 
 <script>
@@ -30,17 +29,13 @@ import { setStore } from "wepy-redux";
 import configStore from "./store";
 import API from "./utils/api.js";
 import wxRequest from "./utils/wxRequest.js";
-// import util from './utils/util.js';
 
 const store = configStore();
 setStore(store);
 
 export default class extends wepy.app {
   config = {
-    pages: [
-      "pages/index",
-       "pages/home"
-    ],
+    pages: ["pages/index", "pages/home"],
     window: {
       backgroundTextStyle: "light",
       navigationBarBackgroundColor: "#fff",
@@ -62,14 +57,14 @@ export default class extends wepy.app {
   onLaunch() {
     // console.log("onLaunch--");
     // 微信预登陆
-    wx.login({
-      success: function(e) {
-        console.log("登录成功", e);
-      }
-    });
+    // wx.login({
+    //   success: function(e) {
+    //     console.log("登录成功", e);
+    //   }
+    // });
   }
   // 全局获取用户信息
-  getUserInfo(res, type, callback) {
+  getUserInfo(res) {
     let _this = this;
     // console.log("获取用户信息--", res);
     if (res.detail.errMsg == "getUserInfo:fail auth deny") {
@@ -83,20 +78,18 @@ export default class extends wepy.app {
     } else if (res.detail.errMsg == "getUserInfo:ok") {
       let userInfo = res.detail.userInfo;
       _this.globalData.userInfo = userInfo;
-      // console.log(_this.globalData.userInfo, "_this.globalData.userInfo");
       wx.setStorageSync("userinfo", userInfo);
-      callback({
-        hasUserInfo: true,
-        userInfo: userInfo
-      });
-      _this.wxLogin(res.detail.encryptedData, res.detail.iv, type);
+      // callback({
+      //   hasUserInfo: true,
+      //   userInfo: userInfo
+      // });
+      _this.wxLogin(res.detail.encryptedData, res.detail.iv);
     }
   }
 
   //授权登录，拿token
 
-  wxLogin(encryptedData, iv, type) {
-    wx.setStorageSync("userType", type); //user登录方式，sell，buy
+  wxLogin(encryptedData, iv) {
     wx.login({
       success: function(res) {
         "use strict";
@@ -107,74 +100,52 @@ export default class extends wepy.app {
             encryptedData: encryptedData,
             iv: iv
           };
-          if (type === "sell") {
-            wxRequest .fetch( API.authLogin + "?_iscreateUser=false", null, params, "POST" )
-              .then(res => {
-                "use strict";
-                // console.log()
-                if (res.data.resultCode === "100") {
-                  console.log(res.data.resultContent);
-                  wx.setStorageSync("unionid", res.data.resultContent.unionId);
-                  wx.setStorageSync("openid", res.data.resultContent.openId);
-                  // util.pageGo('/pages/sell/apply/index', 1)
-                  // AuthProvider.onLogin(type, res => {
-                  //     console.log(res, '获取token')
-                  // })
-                } else {
-                  console.log("error");
-                }
-              });
-          } else if (type === "buy") {
-            wxRequest.fetch(API.authLogin, null, params, "POST").then(res => {
-              "use strict";
-              // console.log()
-              if (res.data.resultCode === "100") {
-                    console.log(res.data.resultContent);
-                    wx.setStorageSync("unionid", res.data.resultContent.unionId);
-                    wx.setStorageSync("openid", res.data.resultContent.openId);
-                    AuthProvider.onLogin(type, null, res => {
-                    console.log(res, "获取token");
-                });
-              } else {
-                console.log("error");
-              }
-            });
-          }
+          wxRequest.fetch(API.authLogin, null, params, "POST").then(res => {
+            "use strict";
+            // console.log()
+            if (res.data.resultCode === "100") {
+              console.log(res.data.resultContent);
+              wx.setStorageSync("unionid", res.data.resultContent.unionId);
+              wx.setStorageSync("openid", res.data.resultContent.openId);
+              AuthProvider.onLogin();
+            } else {
+              console.log("error");
+            }
+          });
         }
       }
     });
   }
 
   // 获取全局属性 用户信息，登录状态
-  getGlobalDatas(canIUse, callback) {
+  getGlobalData(canIUse, callback) {
+    // console.log(canIUse, callback, "canIUse, callback");
     let _this = this;
     let userinfos = wx.getStorageSync("userinfo");
     if (userinfos.hasOwnProperty("nickName")) {
-      console.log(userinfos, "获取全局属性 用户信息，登录状态");
+      // console.log(userinfos, "获取全局属性 用户信息，登录状态");
       callback({
         userInfo: userinfos,
         hasUserInfo: true
       });
     } else {
-      console.log("globalData userInfo");
       if (_this.globalData.userInfo) {
         callback({
-          userInfo: app.globalData.userInfo,
+          userInfo: _this.globalData.userInfo,
           hasUserInfo: true
         });
+        return;
       } else if (canIUse) {
         // 由于 getUserInfo 是网络请求，可能会在 Page.onLoad 之后才返回
         // 所以此处加入 callback 以防止这种情况
         _this.userInfoReadyCallback = res => {
+          console.log(res, "res---");
+
           callback({
             userInfo: res.userInfo,
             hasUserInfo: true
           });
         };
-        callback({
-          userInfo: null,
-          hasUserInfo: false
-        });
       } else if (!canIUse) {
         console.log("low version");
         wx.showModal({
@@ -184,17 +155,15 @@ export default class extends wepy.app {
           content: "微信版本过低，请升级至最新版。",
           mask: true
         });
+        callback({
+          userInfo: null,
+          hasUserInfo: false
+        });
       } else {
-        // 在没有 open-type=getUserInfo 版本的兼容处理
-        wx.getUserInfo({
-          success: res => {
-            _this.globalData.userInfo = res.userInfo;
-            callback({
-              userInfo: res.userInfo,
-              hasUserInfo: true
-            });
-            console.log(success);
-          }
+        //没有授权
+        callback({
+          userInfo: null,
+          hasUserInfo: false
         });
       }
     }

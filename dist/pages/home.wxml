@@ -1,9 +1,34 @@
 
     <view>
-        <view class="title">{{title}}</view>
+        <view class="title" bindtap="showTips">{{title}}</view>
         <switch/>
+        <text class="info">{{now}}</text>
+        <view bindtap="tapName" data-wpytapname-a="{{index}}" data-wpytapname-b="wepy" data-wpytapname-c="otherparams"> 
+          Click me! {{num}}
+        </view>
 
-        <view bindtap="tapName" data-wpytapname-a="{{index}}" data-wpytapname-b="wepy" data-wpytapname-c="otherparams"> Click me! </view>
+        <button bindtap="handleCopy">copy content</button>
+       
+    <view class="promptView" wx:if="{{popErrorMsg}}">
+      {{$PromptBox$prompt}}
+    </view>
+
+        
+    <view>
+        {{$Child$title}}
+        <button bindtap="$Child$tap" type="primary" data-wpytap-a="1">click me</button>
+       
+        <view>
+          <button bindtap="$Child$changeNum" type="primary">change num</button>
+          this is change num {{$Child$changeNum}}
+        </view>
+        <view>
+          <button bindtap="$Child$changeTitle" type="primary">change twoWayTitle</button>
+          this is change title {{$Child$twoWayTitle}}
+        </view>
+    </view>
+
+
        <view class="list">
           <block wx:for="{{groupList}}" wx:for-index="index" wx:for-item="item" wx:key="index">
              
@@ -17,8 +42,34 @@
     </view>
 
           </block>
-      
        </view>
+       
+        <view class="Group">
+          <block wx:for="{{groupListData}}" wx:for-index="index" wx:for-item="item" wx:key="index">
+            
+  <view class="group">
+    <text class="id">{{item.id}}. </text>
+    <text class="name" bindtap="$Group$tap" data-com-index="{{index}}">{{item.name}}</text>
+    <view>
+      <block wx:for="{{item.list}}" wx:for-index="$Group$index" wx:for-item="$Group$item" wx:key="$Group$key">
         
+  <view class="groupitem">
+    --<text class="id">{{$Group$item.childid}}.</text>
+    <text class="name" bindtap="$Group$GroupItem$tap" data-com-index="{{index}}-{{$Group$index}}"> {{$Group$item.childname}}</text>
+  </view>
 
+      </block>
+    </view>
+  </view>
+  
+
+          </block>
+        </view>
+
+        <view class="section__title">日期选择器</view>
+        <picker mode="date" bindchange="bindDateChange" value="{{date}}">
+            <view class="picker">
+              当前选择: {{date}}
+            </view>
+        </picker>
     </view>

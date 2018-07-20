@@ -22,11 +22,11 @@
 }
 </style>
 <template>
-    <view class='list-view' style="color:{{item.isExpand&&checkIndex==item.id?'red':'#288BF2'}};height:{{item.isExpand&&checkIndex==item.id?height+deltaHeight+'px':height+'px'}}">
-      <view class='title textHide' @tap='tap({{item.id}})'>{{item.title}}</view>
+    <view class='list-view' style="color:{{groupItem.isExpand&&checkIndex==groupItem.id?'red':'#288BF2'}};height:{{groupItem.isExpand&&checkIndex==groupItem.id?height+deltaHeight+'px':height+'px'}}">
+      <view class='title textHide' @tap='tap({{groupItem.id}})'>{{groupItem.title}}</view>
       <view class='ul-list'>
-        <image class='pic' src='{{item.pic}}'/>
-        <view class='date'>{{item.date}}</view>
+        <image class='pic' src='{{groupItem.pic}}'/>
+        <view class='date'>{{groupItem.date}}</view>
       </view> 
      
     </view>
@@ -58,7 +58,6 @@ export default class Item extends wepy.component {
   };
 
   onLoad() {
-    // console.log(this.props.checkIndex,'checkIndex');
     
   }
   methods = {

@@ -5,30 +5,54 @@
 
 <template>
     <view>
-        <view class='title'>{{title}}</view>
+        <view class='title' @tap='showTips'>{{title}}</view>
         <switch/>
+        <text class="info">{{now}}</text>
+        <view @tap="tapName({{index}}, 'wepy', 'otherparams')"> 
+          Click me! {{num}}
+        </view>
 
-        <view @tap="tapName({{index}}, 'wepy', 'otherparams')"> Click me! </view>
+        <button @tap='handleCopy'>copy content</button>
+       <PromptBox wx:if='{{popErrorMsg}}' :prompt.sync='popErrorMsg'></PromptBox>
+        <Child :changeNum.sync='num' :twoWayTitle.sync='title'></Child>
+
        <view class='list'>
           <repeat for='{{groupList}}' key='index' index='index' item='item'>
              <Item 
-              :item.sync="item" :checkIndex='checkIndex' 
+              :groupItem.sync="item" :checkIndex='checkIndex' 
               @childHandle.user='handleCheck' 
               ></Item>
           </repeat>
-      
        </view>
-        
+       
+        <view class='Group'>
+          <repeat for='{{groupListData}}' key='index'>
+            <Group :groupItem.sync='item' :indexa.sync='index' 
+            @index-emit.user='counterEmit'></Group>
+          </repeat>
+        </view>
 
+        <view class="section__title">日期选择器</view>
+        <picker mode="date" @change='bindDateChange' value="{{date}}" >
+            <view class="picker">
+              当前选择: {{date}}
+            </view>
+        </picker>
     </view>
+
+    
 </template>
 
 
 <script>
 import wepy from 'wepy';
+import ConfigApi from "../utils/config.js";
+import wxRequest from '../utils/wxRequest.js';
+import Utils from "../utils/utils.js";
 import Child from '../components/child';
 import Item from '../components/item';
-import wxRequest from '../utils/wxRequest.js';
+import Group from "../components/group";
+import PromptBox from "../components/shareComponent/promptBox";
 export default class Home extends wepy.page {
   config = {
     navigationBarTitleText: 'my wepy',
@@ -36,35 +60,103 @@ export default class Home extends wepy.page {
     navigationBarTextStyle: "white"
   };
   components = {
-    child: Child,
+    Child: Child,
     Item: Item,
+    Group:Group,
+    PromptBox:PromptBox
   };
   data = {
     index: 0,
     title: 'my item.title',
     checkIndex: -1,
-    groupList: []
+    groupList: [],
+    popErrorMsg:null,
+    num:1,
+    date: '2018-09-01',
+    groupListData: [
+      {
+        id: 1,
+        name: '点击改变',
+        list: [
+          {
+            childid: '1.1',
+            childname: '子项，点我改变'
+          },
+          {
+            childid: '1.2',
+            childname: '子项，点我改变'
+          },
+          {
+            childid: '1.3',
+            childname: '子项，点我改变'
+          }
+        ]
+      },
+      {
+        id: 2,
+        name: '点击改变',
+        list: [
+          {
+            childid: '2.1',
+            childname: '子项，点我改变'
+          },
+          {
+            childid: '2.2',
+            childname: '子项，点我改变'
+          },
+          {
+            childid: '2.3',
+            childname: '子项，点我改变'
+          }
+        ]
+      },
+      {
+        id: 3,
+        name: '点击改变',
+        list: [
+          {
+            childid: '3.1',
+            childname: '子项，点我改变'
+          }
+        ]
+      }
+    ]
+   
   };
-
+  // computed 计算属性
+  computed = {
+    now() {
+      return +new Date();
+    }
+  };
+  // watcher 监听器
+  watch={
+    // // 监听器函数名必须跟需要被监听的data对象中的属性num同名，
+    // 其参数中的newValue为属性改变后的新值，oldValue为改变前的旧值
+    num(newValue, oldValue){
+      console.log(`pather num value: ${oldValue} -> ${newValue}`)
+    },
+    title(newValue, oldValue){
+     console.log(`pather title value: ${oldValue} -> ${newValue}`)
+    }
+  }
   onLoad(options) {
     console.log(options,'options');
-    
     let url = 'http://ons.me/tools/dropload/json.php?page=0&size=5';
     wxRequest.fetch(url, null, null, 'GET').then(res => {
       this.groupList = res.data.map(item => {
         return { ...item, isExpand: false };
       });
-
       this.$apply();
       console.log(this.groupList, 'res---');
     });
     this.$broadcast('handleCheck'); //由父组件发起，所有子组件都会收到此广播事件
+    // this.$broadcast('counterEmit')
   }
 
   methods = {
     tapName(id, title, other, event) {
-      console.log(id, title, other);
-      console.log('event', event);
+      Utils.ErrorTips(this,'home show tips 2',3000)
     },
     handleCheck(index) {
       // 赋值，修改data中的数据
@@ -74,14 +166,30 @@ export default class Home extends wepy.page {
           ? Object.assign({},{ ...item, isExpand: false },{})
           : Object.assign({},{ ...item, isExpand: !item.isExpand },{})
       });
-      // console.log(this.groupList, 'new list');
+    },
+    counterEmit(index,name){
+      console.log(index,name,'counterEmit-');
+    },
+    handleCopy(){
+      console.log(2);
+      Utils.copyText('12')
+    },
+    bindDateChange(e){
+        console.log('e',e)
+        console.log('picker发送选择改变，携带值为', e.detail.value)
+        this.date = e.detail.value
     }
   };
-
+  showTips(){
+     Utils.ErrorTips(this,'home show tips',3000)
+  }
   events = {
-    // 'index-emit':(index)=>{
-    //   console.log(index,'');
+    // 'index-emit':(...args)=>{
+    //   console.log(this.groupList,'this.groupList');
+      
+    //   console.log(args,'index-emit---');
     // }
   };
+    
 }
 </script>

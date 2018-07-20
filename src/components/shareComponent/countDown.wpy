@@ -39,18 +39,17 @@ export default class CountDown extends wepy.component {
     // console.log(this.countDownTime,'countDownTime');
     this.handleCountDownTime();
   }
-  methods = {
-    tap() {}
-  };
+  methods = {};
   handleCountDownTime() {
     let timeUpdate = this.timeUpdate.timeUpdate;
     let type = this.timeUpdate.type;
     this.typeTime = type
-    let current = new Date().getTime();
+    let current = Date.now();//==new Date().getTime()
     if (current < timeUpdate) {
-      let time = Math.floor((timeUpdate - current) / 1000);
-      this.downTime = this.countDownTime(time,type);
+      let timeC = Math.floor((timeUpdate - current) / 1000);
+      this.downTime = this.countDownTime(timeC,type);
       this.$apply();
+      if (timeC <= 0) return
       setTimeout(() => {
         this.handleCountDownTime();
       }, 500);

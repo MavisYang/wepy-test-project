@@ -1,3 +1,4 @@
+@import "./../components/shareComponent/getUserInfo.wxss";
 @import "./../components/shareComponent/promptBox.wxss";
 @import "./../components/shareComponent/swiper.wxss";
 @import "./../components/shareComponent/countDown.wxss";

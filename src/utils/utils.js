@@ -74,16 +74,6 @@ function openShare(title, path, imageUrl, callback) {
         }
     }
 }
-/**
- * 砍价信息提示
-*/
-function bargainTips(that, str) {
-    that.setData({
-        stop: true,
-        popErrorMsg: str
-    });
-    hideErrorTips(that);
-}
 
 /**
  *  错误全局提示
@@ -91,21 +81,20 @@ function bargainTips(that, str) {
  * @param str
  * @constructor
  */
-function ErrorTips(that, str) {
-    that.setData({
-        stop: true,
-        popErrorMsg: str
-    });
-    hideErrorTips(that);
+function ErrorTips(that, str, timer) {
+    // console.log(that, str, timer,'that, str, timer');
+    that.stop = true;
+    that.popErrorMsg = str;
+    that.$apply();
+    hideErrorTips(that,timer);
 }
 
-function hideErrorTips(that) {
+function hideErrorTips(that, timer) {
     let fadeOutTimeout = setTimeout(() => {
-        that.setData({
-            popErrorMsg: null,
-        });
+        that.popErrorMsg = null;
+        that.$apply();
         clearTimeout(fadeOutTimeout);
-    }, 5000);
+    }, timer);
 }
 
 /**
@@ -229,19 +218,17 @@ function formSubmits(e) {
  * @param total_micro_second
  */
 var count_down = function (that, total_micro_second) {
-    if (total_micro_second <= 0) {
-        that.setData({
-            phoneText: '重新获取',
-            phoneCodeState: true
-        });
+    if (total_micro_second <= 1) {
+        that.countTime = "重新获取";
+        that.countTimeState = true;
+        that.$apply();
         // timeout则跳出递归
         return;
     }
     // 渲染倒计时时钟
-    that.setData({
-        phoneText: formatZero(date_format(total_micro_second)) + 's后重试',
-        phoneCodeState: false
-    });
+    that.countTime = formatZero(date_format(total_micro_second)) + 's后重试';
+    that.countTimeState = false;
+    that.$apply();
     setTimeout(function () {
         // 放在最后--
         total_micro_second -= 10;
@@ -286,7 +273,24 @@ var formatNumber = function (n) {
     n = n.toString()
     return n[1] ? n : '0' + n
 }
-
+/**
+ *
+ * @param time 团购倒计时
+ */
+function countDownTime(time) {
+    var leave1 = time % (24 * 3600)
+    var hours = Math.floor(leave1 / 3600);
+    //计算相差分钟数
+    var leave2 = leave1 % 3600       //计算小时数后剩余的秒数
+    var minutes = Math.floor(leave2 / 60)
+    //计算相差秒数
+    var leave3 = leave2 % 60
+    var seconds = leave3
+    if (hours < 0 || minutes < 0 || seconds < 0) {
+        return '00:00:00'
+    }
+    return formatZero(hours) + ':' + formatZero(minutes) + ':' + formatZero(seconds)
+}
 /**
  * 验证手机号码
  * @param str
@@ -329,6 +333,6 @@ module.exports = {
     verifyPhone: verifyPhone,
     newDate: newDate,
     newTime: newTime,
-    bargainTips: bargainTips,
-    formatTimes: formatTimes
+    formatTimes: formatTimes,
+    countDownTime: countDownTime
 };
